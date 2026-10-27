@@ -1,0 +1,6 @@
+{
+  "cleanUrls": true,
+  "functions": {
+    "api/stripe.js": { "maxDuration": 30 }
+  }
+}

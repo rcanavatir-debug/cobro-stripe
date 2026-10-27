@@ -1,0 +1,55 @@
+/* Ticket térmico (js/recibo.js): terminal oscura que imprime el recibo de la reserva. Adaptado de github.com/reneneitor22/ticket-termico */
+.rc-stage { position: relative; width: min(400px, 100%); margin: 6px auto 0; }
+.rc-term { position: relative; z-index: 3; background: linear-gradient(#343230, #26241f); border-radius: 24px; padding: 12px 12px 20px;
+  box-shadow: 0 1px 0 rgba(255,255,255,.10) inset, 0 -1px 0 rgba(0,0,0,.5) inset, 0 18px 40px -12px rgba(40,32,20,.55), 0 3px 10px rgba(40,32,20,.25); }
+.rc-top { display: flex; align-items: center; gap: 10px; padding: 2px 6px 10px; }
+.rc-mark { width: 62px; height: 38px; border-radius: 8px; background: linear-gradient(#3c3936, #2c2926); display: grid; place-items: center; box-shadow: 0 1px 0 rgba(255,255,255,.07) inset; }
+.rc-mark img { width: 54px; height: auto; display: block; }
+.rc-brand { font-family: var(--sans); color: #9c968b; font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; }
+.rc-panel { background: #211f1d; border-radius: 16px; padding: 14px 16px 12px; box-shadow: 0 1px 0 rgba(255,255,255,.05) inset, 0 6px 14px -8px #000 inset; }
+.rc-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+.rc-plan { font-family: var(--sans); color: #efe9dd; font-size: clamp(14px, 4vw, 16px); font-weight: 600; letter-spacing: -.01em; }
+.rc-sub { font-family: var(--sans); color: #9c968b; font-size: clamp(11.5px, 3.3vw, 13px); margin-top: 2px; }
+.rc-totl { font-family: var(--sans); color: #9c968b; font-size: 12px; text-align: right; }
+.rc-tot { font-family: var(--sans); color: #efe9dd; font-size: clamp(16px, 4.8vw, 20px); white-space: nowrap; font-weight: 600; letter-spacing: -.02em; text-align: right; font-variant-numeric: tabular-nums; }
+.rc-status { display: flex; align-items: center; gap: 10px; margin-top: 14px; font-family: var(--sans); color: #a8a297; font-size: clamp(13px, 3.6vw, 14px); }
+.rc-txt { transition: opacity .18s ease; }
+.rc-spin { width: 17px; height: 17px; flex: none; border-radius: 50%; border: 1.8px solid rgba(232,227,216,.22); border-top-color: rgba(232,227,216,.85); animation: rc-spin .8s linear infinite; }
+@keyframes rc-spin { to { transform: rotate(360deg); } }
+.rc-check { width: 19px; height: 19px; flex: none; border-radius: 50%; background: var(--leaf, #94AB67); display: none; place-items: center; transform: scale(.6); opacity: 0; animation: rc-pop .28s cubic-bezier(.2,1.5,.4,1) forwards; }
+.rc-check svg { width: 13px; height: 13px; fill: none; stroke: #fff; stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; overflow: visible; }
+.rc-check path { stroke-dasharray: 21; stroke-dashoffset: 21; animation: rc-draw .34s .04s cubic-bezier(.3,.9,.4,1) forwards; }
+@keyframes rc-draw { to { stroke-dashoffset: 0; } }
+@keyframes rc-pop { to { transform: scale(1); opacity: 1; } }
+.rc-done .rc-spin { display: none; }
+.rc-done .rc-check { display: grid; }
+.rc-done .rc-status { color: #cfc9bd; }
+.rc-slot { position: absolute; left: 24px; right: 24px; bottom: 8px; height: 14px; border-radius: 3px; background: linear-gradient(#0d0c0b, #141312 55%, #2a2825); box-shadow: 0 1px 0 rgba(255,255,255,.08), 0 -2px 6px rgba(0,0,0,.5) inset; }
+
+/* papel: nace por debajo del borde de la terminal; solo se recorta por arriba */
+.rc-out { position: relative; z-index: 2; margin: -12px clamp(20px, 10%, 40px) 0; height: 0; clip-path: inset(0 -70px -70px -70px); will-change: height; }
+.rc-sheet { position: absolute; left: 0; right: 0; bottom: 0; filter: drop-shadow(0 12px 16px rgba(60,48,30,.20)) drop-shadow(0 2px 3px rgba(60,48,30,.16)); }
+.rc-paper { position: relative; background: linear-gradient(180deg, rgba(0,0,0,.16), rgba(0,0,0,0) 26px), linear-gradient(92deg, rgba(0,0,0,.045), rgba(0,0,0,0) 18%, rgba(0,0,0,0) 82%, rgba(0,0,0,.045)), #fbf9f4;
+  color: #33302b; font: 400 clamp(9px, 2.9vw, 11.5px)/1.75 ui-monospace, "SF Mono", Menlo, Consolas, monospace; padding: 20px clamp(12px, 5%, 22px) 29px; text-align: left; }
+.rc-paper::before { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .07; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2'/></filter><rect width='120' height='120' filter='url(%23p)' opacity='0.55'/></svg>"); }
+.rc-pmark { display: block; width: 96px; height: auto; margin: 0 auto 12px; }
+.rc-hr { border: 0; border-top: 1px dashed #cbc4b6; margin: 11px 0; }
+.rc-l { display: flex; justify-content: space-between; gap: 10px; letter-spacing: .02em; }
+.rc-k { color: #6f6a61; text-transform: uppercase; font-size: .92em; letter-spacing: .09em; }
+.rc-v { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.rc-big { font-size: 1.08em; font-weight: 600; letter-spacing: .06em; }
+.rc-big .rc-v { font-size: 1.28em; }
+.rc-muted { color: #7b756b; font-size: .92em; letter-spacing: .04em; }
+.rc-meta { margin-top: 12px; display: grid; gap: 3px; }
+.rc-meta .rc-k { font-size: .87em; }
+.rc-meta .rc-v { font-size: .92em; color: #4b463f; }
+.rc-barcode { display: flex; align-items: flex-end; justify-content: center; gap: 1.5px; height: 46px; margin: 18px auto 6px; width: 74%; }
+.rc-barcode i { display: block; background: #2c2a26; height: 100%; }
+.rc-code { text-align: center; color: #8a847a; font-size: .88em; letter-spacing: .32em; }
+.rc-feeding .rc-sheet { animation: rc-feed .085s steps(2, end) infinite; }
+@keyframes rc-feed { 0% { transform: translateY(0); } 50% { transform: translateY(.6px); } 100% { transform: translateY(0); } }
+.rc-after { position: relative; z-index: 5; margin-top: 22px; animation: rc-in .4s ease both; }
+@keyframes rc-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.paybox .state .rc-after .btn { margin-top: 10px; }
+@media (prefers-reduced-motion: reduce) { .rc-feeding .rc-sheet { animation: none; } .rc-spin { animation-duration: 2s; } .rc-after { animation: none; } }

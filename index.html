@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cobro con Stripe · ejemplo</title>
+<link rel="stylesheet" href="css/cobro.css">
+<link rel="stylesheet" href="css/recibo.css">
+</head>
+<body>
+<main class="demo">
+  <h1>Ejemplo de cobro con Stripe</h1>
+  <p>Página mínima para probar el cobro. Copia la ventana de pago (<code>#paybox</code>), <code>js/cobro.js</code>, <code>js/recibo.js</code>, <code>css/</code> y <code>api/</code> a tu sitio y llama a <code>cobrar(...)</code> desde tu botón de reservar.</p>
+  <button class="btn primary" id="pagarTour" type="button">Pagar tour · 2 personas · $2,400 MXN</button>
+  <button class="btn" id="pagarAnticipo" type="button">Pagar anticipo 50 % · $1,200 MXN</button>
+  <p class="small">Ver el ticket sin cobrar: <a href="?ticket=demo">?ticket=demo</a></p>
+</main>
+
+<!-- Ventana de pago: cópiala tal cual a tu página -->
+<div class="paybox" id="paybox" hidden role="dialog" aria-modal="true" aria-labelledby="payTitle">
+  <div class="card">
+    <button class="x" id="payClose" type="button" aria-label="Cerrar">✕</button>
+    <h3 id="payTitle"></h3>
+    <div class="what" id="payWhat"></div>
+    <div id="payBrick"></div>
+    <div class="state" id="payState" role="status" hidden></div>
+    <p class="safe">Pago seguro procesado por Stripe. No guardamos los datos de tu tarjeta.</p>
+  </div>
+</div>
+
+<script defer src="js/recibo.js"></script>
+<script defer src="js/cobro.js"></script>
+<script>
+  // Tus botones: el servidor (api/stripe.js, PRECIOS) revisa que el monto coincida con producto × personas
+  document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("pagarTour").addEventListener("click", function () {
+      cobrar({ amount: 2400, titulo: "Tour tradicional", detalle: "2 personas · 15 de noviembre", description: "Tour tradicional · 2 personas", sum: "Tour tradicional · 2 personas · 15 nov", res: { producto: "tour", personas: 2 }, lang: "es",
+        despues: 'Te mandamos tu confirmación por correo.<br><a class="btn primary" target="_blank" rel="noopener" href="https://wa.me/521XXXXXXXXXX?text=Pagué%20mi%20reserva">Avisar por WhatsApp →</a>' });
+    });
+    document.getElementById("pagarAnticipo").addEventListener("click", function () {
+      cobrar({ amount: 1200, titulo: "Anticipo de tu reserva", detalle: "Tour · 2 personas · 15 de noviembre", description: "Anticipo tour · 2 personas", sum: "Anticipo tour · 2 personas · 15 nov", res: { producto: "tour", personas: 2, anticipo: true }, lang: "es",
+        despues: "El resto lo pagas al llegar." });
+    });
+  });
+</script>
+</body>
+</html>
